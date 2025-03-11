@@ -1,43 +1,7 @@
-# name: Prisma Access IP Fetch
-
-# on:
-#   workflow_dispatch:  # 手動トリガー
-#   schedule:
-#     - cron: '0 23 * * *'  # 日本時間の毎朝8時に実行
-
-# jobs:
-#   fetch-prisma-ip:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       # リポジトリをチェックアウト
-#       - name: Checkout
-#         uses: actions/checkout@v3
-
-#       # cURLコマンドを実行
-#       - name: Fetch Prisma Access IP
-#         run: |
-#           cd "$GITHUB_WORKSPACE"
-#           curl -X POST -d @option.txt \
-#             -H "header-api-key: ${{ secrets.PRISMA_API_KEY }}" \
-#             "https://api.prod6.datapath.prismaaccess.com/getPrismaAccessIP/v2" \
-#             --ssl-no-revoke -o response.json
-
-#       # 結果を確認
-#       - name: Display Response
-#         run: cat response.json
-
-#       # 結果を保存
-#       - name: Upload JSON Artifact
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: prisma-response
-#           path: response.json
-
 name: Prisma Access IP Fetch
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 手動トリガー
   schedule:
     - cron: '0 23 * * *'  # 日本時間の毎朝8時に実行
 
@@ -46,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # リポジトリをチェックアウト
       - name: Checkout
         uses: actions/checkout@v3
 
+      # cURLコマンドを実行
       - name: Fetch Prisma Access IP
         run: |
           cd "$GITHUB_WORKSPACE"
@@ -57,26 +23,13 @@ jobs:
             "https://api.prod6.datapath.prismaaccess.com/getPrismaAccessIP/v2" \
             --ssl-no-revoke -o response.json
 
+      # 結果を確認
       - name: Display Response
         run: cat response.json
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 結果を保存
+      - name: Upload JSON Artifact
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: latest
-          release_name: Prisma Access IP Response
-          draft: false
-          prerelease: false
-
-      - name: Upload JSON to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./response.json
-          asset_name: response.json
-          asset_content_type: application/json
+          name: prisma-response
+          path: response.json
