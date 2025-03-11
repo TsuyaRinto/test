@@ -29,7 +29,7 @@ jobs:
 
       # 結果を保存
       - name: Upload JSON Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: prisma-response
           path: response.json
